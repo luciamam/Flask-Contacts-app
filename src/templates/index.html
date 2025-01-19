@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    {% with messages= get_flashed_messages() %}
+    {% if message %}
+    {% for message in messages %}
+
+    <p>{{ message }}</p>
+
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+
+    <form action="/add_contact" method="post">
+        <h1>FORMULIN</h1>
+        <input type="text" placeholder="Nombre" name="fullname"><br>
+        <input type="number" placeholder="Telefono"name="phone"><br>
+        <input type="email" placeholder="Email" name="email"><br>
+        <button type="submit">Enviar datos</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <td>Fullname</td>
+                <td>Phone</td>
+                <td>Email</td>
+                <td>Operations</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for contact in contacts %}
+            <tr>
+                <td>{{contact[1]}}</td>
+                <td>{{contact[2]}}</td>
+                <td>{{contact[3]}}</td>
+                <td>
+                    <a href="/edit/{{contact[0]}}">Edit</a>
+                    <a href="/delete/{{contact[0]}}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
