@@ -20,6 +20,8 @@ app.secret_key=os.getenv('SECRET_KEY')
 mysql=MySQL(app)
 
 
+
+
 @app.route('/')
 def index():
     #conexion a la base de datos 
@@ -29,6 +31,9 @@ def index():
     print(data)
 
     return render_template('index.html',contacts=data)
+
+
+
 
 
 @app.route('/add_contact',methods=['POST'])
@@ -52,6 +57,9 @@ def add_contact():
             #mysql.connect.close()  
         return 'ADD contact'       #return 'Received'
 
+
+
+
 @app.route('/edit/<string:id>')
 def edit_contact(id):
 
@@ -59,8 +67,9 @@ def edit_contact(id):
     cur.execute('SELECT * FROM contacts WHERE id = {}'.format(id,))
     data = cur.fetchall()
     print(data[0])
-
     return render_template('edit-contact.html', contact = data[0])
+
+
 
 @app.route('/update/<string:id>', methods=['POST'])
 def update_contact(id):
@@ -76,6 +85,9 @@ def update_contact(id):
         flash('Contact Updated Successfully')
 
         return redirect(url_for('index'))
+    
+
+
 
 @app.route('/delete/<string:id>')
 def delete_contact(id):
@@ -84,6 +96,9 @@ def delete_contact(id):
     mysql.connection.commit()
     flash('Contact Removed Successfully')
     return redirect(url_for('index'))
+
+
+
 
 
 if __name__ == '__main__':
