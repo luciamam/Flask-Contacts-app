@@ -1,3 +1,5 @@
+#author Lucia Mansogo 
+
 from flask import Flask,render_template,request,redirect,url_for,flash
 from dotenv import load_dotenv
 from os import getenv
@@ -6,8 +8,6 @@ import os
 
 
 load_dotenv()
-
-
 
 
 app=Flask(__name__)
@@ -49,32 +49,43 @@ def add_contact():
             #Lo que remos decir aqui es que una vez agregado el uusrio que le redirija al metedo que le ruta de del endpoinu raiz de la app
             #el metodo index() que ue esta en la ruta raiz es la que hace esto 
             return redirect(url_for('index'))
-            #mysql.connect.close()
-
-            
+            #mysql.connect.close()  
         return 'ADD contact'       #return 'Received'
 
+@app.route('/edit/<string:id>')
+def edit_contact(id):
 
-        
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM contacts WHERE id = {}'.format(id,))
+    data = cur.fetchall()
+    print(data[0])
+
+    return render_template('edit-contact.html', contact = data[0])
+
+@app.route('/update/<string:id>', methods=['POST'])
+def update_contact(id):
+
+    if request.method == 'POST':
+        fullname = request.form['fullname']
+        email = request.form['email']
+        phone = request.form['phone']
+        cur = mysql.connection.cursor()
+        cur.execute('UPDATE contacts SET fullname = %s, email = %s, phone = %s WHERE id = %s', (fullname, email, phone, id))
+
+        mysql.connection.commit()
+        flash('Contact Updated Successfully')
+
+        return redirect(url_for('index'))
+
 @app.route('/delete/<string:id>')
-def delete(id):
-    cursor=mysql.connection.cursor()
-    cursor.execute('DELETE FROM contacts WHERE id=%s',(id))
+def delete_contact(id):
+    cur = mysql.connection.cursor()
+    cur.execute('DELETE FROM contacts WHERE id= {}'.format(id,))
     mysql.connection.commit()
     flash('Contact Removed Successfully')
     return redirect(url_for('index'))
 
 
+if __name__ == '__main__':
 
-@app.route('/edit')
-def edit():
-    return 'edit contact'
-
-@app.route('/update')
-def update():
-    return 'update contact'
-
-
-
-if __name__=='__main__':
-    app.run(debug=True, host='0.0.0.0',port=3000)
+    app.run(debug=True, host='0.0.0.0')
