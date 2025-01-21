@@ -7,6 +7,7 @@ from flask_mysqldb import MySQL
 import os
 
 
+
 load_dotenv()
 
 
@@ -64,7 +65,7 @@ def add_contact():
 def edit_contact(id):
 
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM contacts WHERE id = {}'.format(id,))
+    cur.execute('SELECT * FROM contacts WHERE id = %s',(id,))
     data = cur.fetchall()
     print(data[0])
     return render_template('edit-contact.html', contact = data[0])
@@ -92,7 +93,7 @@ def update_contact(id):
 @app.route('/delete/<string:id>')
 def delete_contact(id):
     cur = mysql.connection.cursor()
-    cur.execute('DELETE FROM contacts WHERE id= {}'.format(id,))
+    cur.execute('DELETE FROM contacts WHERE id=%s',(id,))
     mysql.connection.commit()
     flash('Contact Removed Successfully')
     return redirect(url_for('index'))
@@ -104,3 +105,7 @@ def delete_contact(id):
 if __name__ == '__main__':
 
     app.run(debug=True, host='0.0.0.0')
+
+
+
+
